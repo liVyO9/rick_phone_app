@@ -4,6 +4,9 @@ import retrofit2.Response
 
 class RickAndMortyCharactersRepository {
 
-    suspend fun getRickAndMortyCharactersResponse(): Response<RickAndMortyCharactersResponse> =
-        RickAndMortyCharactersService.rickAndMortyCharactersService.getRickAndMortyCharactersResponse()
+    suspend fun getAllRickAndMortyCharactersResponse(): Response<RickAndMortyCharactersResponse> =
+        RickAndMortyCharactersService.rickAndMortyCharactersService.getAllRickAndMortyCharactersResponse()
+
+    suspend fun getRickAndMortyCharacterResponse(characterId: Int): Response<RickAndMortyCharacterResponse> =
+        RickAndMortyCharactersService.rickAndMortyCharactersService.getRickAndMortyCharacterResponse(characterId = characterId)
 }

@@ -10,6 +10,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,12 +28,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -62,7 +67,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun navigateToDetailsActivity(id:String){
+    fun navigateToDetailsActivity(id:Int){
         val intent = Intent(this, DetailsActivity::class.java)
         intent.putExtra("CUSTOM_KEY", id)
         startActivity(intent)
@@ -70,15 +75,15 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun RickAndMortyDisplay(viewModel: MainViewModel){
-    val uiState by viewModel.mutableLiveDataRickAndMorty.observeAsState(UiState())
+fun RickAndMortyDisplay(viewModel: MainViewModel, onClick: (Int) -> Unit){
+    val uiState by viewModel.mutableLiveDataRickAndMortyAllCharacters.observeAsState(UiState())
     Log.d("AAA", "AAAA")
     when {
         uiState.isLoading -> { MyLoadingView() }
 
         uiState.error != null -> { MyErrorView() }
 
-        uiState.data != null -> { uiState.data?.let { CharactersListDisplay(charakters = it) } }
+        uiState.data != null -> { uiState.data?.let { CharactersListDisplay(charakters = it, onClick = { id -> onClick.invoke(id)}) } }
     }
 }
 
@@ -96,7 +101,7 @@ fun MyLoadingView() {
 }
 
 @Composable
-fun CharactersListDisplay(charakters: List<Charakter>, onClick: (String) -> Unit) {
+fun CharactersListDisplay(charakters: List<Charakter>, onClick: (Int) -> Unit) {
     if (charakters.isNotEmpty()){
 //        rickAndMorty.forEach{ element ->
 //            Log.d("MainActivity", element.name)
@@ -104,7 +109,7 @@ fun CharactersListDisplay(charakters: List<Charakter>, onClick: (String) -> Unit
         LazyColumn{
                 items(charakters){
                    element ->
-                    CharacterDisplay(name = element.name, status = element.status, species = element.species, url = element.image, onClick = { id -> onClick.invoke(id)})
+                    CharacterDisplay(name = element.name, url = element.image, characterId = element.id, onClick = { id -> onClick.invoke(id)})
                 }
         }
     }
@@ -112,27 +117,12 @@ fun CharactersListDisplay(charakters: List<Charakter>, onClick: (String) -> Unit
 
 
 @Composable
-fun CharacterDisplay(name:String, status: String, species:String, url:String, onClick: (String) -> Unit){
-    Row {
+fun CharacterDisplay(name:String, url:String, characterId: Int, onClick: (Int) -> Unit){
+    Row ( modifier = Modifier.padding(bottom = 5.dp).clickable { onClick.invoke(characterId) }){
         AsyncImage(model = url, contentDescription = "opis", modifier = Modifier.size(200.dp))
-//        Image(painter = painterResource(id = R.drawable.rick), contentDescription = "Rick", modifier = Modifier.size(200.dp))
-        Column (
-//            zakładam, że id mojego elementu/kafelka to pole name
-            modifier = Modifier.clickable { onClick.invoke(name) }
-        ){
-            Text(text = name, fontSize = 20.sp, modifier = Modifier.padding(all = 2.dp))
-            Text(text = "$status - $species", fontSize = 10.sp, modifier = Modifier
-                .padding(all = 2.dp)
-                .padding(bottom = 10.dp))
-//            Text(text = "Last known location:", fontSize = 10.sp, color = Color.Gray, modifier = Modifier.padding(all = 2.dp))
-//            Text(text = "Rickmurai Jack", fontSize = 11.sp, modifier = Modifier
-//                .padding(all = 2.dp)
-//                .padding(bottom = 10.dp))
-//            Text(text = "First seen in:", fontSize = 10.sp, color = Color.Gray, modifier = Modifier.padding(all = 2.dp))
-//            Text(text = "Pilot", fontSize = 11.sp, modifier = Modifier
-//                .padding(all = 2.dp)
-//                .padding(bottom = 5.dp))
-        }
+//
+            Text(text = name, fontSize = 40.sp, modifier = Modifier.padding(10.dp), lineHeight = 40.sp, fontWeight = FontWeight.Bold, overflow = TextOverflow.Ellipsis)
+
     }
 }
 

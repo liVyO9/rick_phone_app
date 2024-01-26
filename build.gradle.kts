@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.sitnik.cwiczenia"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.sitnik.cwiczenia"

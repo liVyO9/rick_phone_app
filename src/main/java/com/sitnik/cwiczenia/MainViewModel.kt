@@ -14,7 +14,7 @@ class MainViewModel : ViewModel() {
 
     private val rickAndMortyCharactersRepository = RickAndMortyCharactersRepository()
 
-    val mutableLiveDataRickAndMorty = MutableLiveData<UiState<List<Charakter>>>()
+    val mutableLiveDataRickAndMortyAllCharacters = MutableLiveData<UiState<List<Charakter>>>()
 
 
 
@@ -22,12 +22,12 @@ class MainViewModel : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO){
             try{
-                val request = rickAndMortyCharactersRepository.getRickAndMortyCharactersResponse()
+                val request = rickAndMortyCharactersRepository.getAllRickAndMortyCharactersResponse()
                 Log.d("MainViewModel", "request response code: ${request.code()}")
                 Log.d("MainViewModel1", "request response code: ${request.body()}")
                 Log.d("MainViewModel2", "request response code: ${request.body()}")
-                val rickAndMortyCharacters = request.body()?.results
-                mutableLiveDataRickAndMorty.postValue(UiState(rickAndMortyCharacters))
+                val rickAndMortyAllCharacters = request.body()?.results
+                mutableLiveDataRickAndMortyAllCharacters.postValue(UiState(rickAndMortyAllCharacters))
             }catch (e: Exception){
                 Log.e("MainViewModel", "request failed, exception", e)
             }

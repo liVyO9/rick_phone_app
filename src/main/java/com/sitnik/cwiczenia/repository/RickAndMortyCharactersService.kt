@@ -4,11 +4,15 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface RickAndMortyCharactersService {
 
     @GET("/api/character")
-    suspend fun getRickAndMortyCharactersResponse(): Response<RickAndMortyCharactersResponse>
+    suspend fun getAllRickAndMortyCharactersResponse(): Response<RickAndMortyCharactersResponse>
+
+    @GET("api/character/{id}")
+    suspend fun getRickAndMortyCharacterResponse(@Path("id") characterId:Int): Response<RickAndMortyCharacterResponse>
 
     companion object {
         private const val BASE_URL = "https://rickandmortyapi.com/"
@@ -24,5 +28,4 @@ interface RickAndMortyCharactersService {
             retrofit.create(RickAndMortyCharactersService::class.java)
         }
     }
-//    fun RickAndMorty2Response(): Response<List<Charakters>>
 }
